@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "273893569601",
+    "project_id": "helpme-b79d6",
+    "storage_bucket": "helpme-b79d6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:273893569601:android:b983fa3083c5c7aef742c0",
+        "android_client_info": {
+          "package_name": "com.example.helpme"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB6mDDJMSIO2U6mzHg6BOHknhE-bom5a7c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
