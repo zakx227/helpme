@@ -4,6 +4,7 @@ class UserModel {
   final String email;
   final String quartier;
   final String tel;
+  final String role;
 
   UserModel({
     required this.uid,
@@ -11,6 +12,7 @@ class UserModel {
     required this.email,
     required this.quartier,
     required this.tel,
+    required this.role,
   });
 
   Map<String, dynamic> toJson() {
@@ -20,6 +22,7 @@ class UserModel {
       'email': email,
       'quartier': quartier,
       'tel': tel,
+      'role': role,
     };
   }
 
@@ -30,6 +33,7 @@ class UserModel {
       email: map['email'],
       quartier: map['quartier'],
       tel: map['tel'],
+      role: map['role'],
     );
   }
 }

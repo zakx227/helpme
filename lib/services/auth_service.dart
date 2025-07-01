@@ -1,11 +1,20 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class AuthService {
   final _auth = FirebaseAuth.instance;
-
+  final _firestore = FirebaseFirestore.instance;
   //----------------------Connexion---------------------------------
-  Future signIn(String email, String password) async {
-    await _auth.signInWithEmailAndPassword(email: email, password: password);
+  Future<String?> signIn(String email, String password) async {
+    UserCredential userCredential = await _auth.signInWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    DocumentSnapshot userDoc = await _firestore
+        .collection('users')
+        .doc(userCredential.user!.uid)
+        .get();
+    return userDoc['role'];
   }
 
   //--------------------Deconnxion--------------------------------

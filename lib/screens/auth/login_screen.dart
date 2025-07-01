@@ -16,6 +16,66 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   final _formKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  bool isPasswordHidden = true;
+
+  @override
+  void dispose() {
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  void login() async {
+    if (_formKey.currentState!.validate()) {
+      ref.read(isLoadingProvider.notifier).state = true;
+      try {
+        String? result = await AuthService().signIn(
+          _emailController.text.trim(),
+          _passwordController.text.trim(),
+        );
+        if (result == 'beneficiaire') {
+          Navigator.pushReplacementNamed(context, '/beneficiaire');
+        } else if (result == 'aidant') {
+          Navigator.pushReplacementNamed(context, '/aidant');
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              'Connexion reussi !',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Colors.green,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } on FirebaseAuthException catch (e) {
+        String message;
+        switch (e.code) {
+          case 'network-request-failed':
+            message = 'Vérifiez votre connexion internet et réessayez';
+            break;
+          case 'invalid-credential':
+            message = 'Email ou mot de passe incorrect';
+            break;
+          default:
+            message = e.code;
+        }
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              message,
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Colors.red,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      } finally {
+        ref.read(isLoadingProvider.notifier).state = false;
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,6 +132,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         borderSide: BorderSide(color: Colors.green, width: 2),
                         borderRadius: BorderRadius.circular(30),
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
                   ),
                   //---------------------TextFormField password ---------------------------
@@ -83,7 +151,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       }
                       return null;
                     },
-                    obscureText: true,
+                    obscureText: isPasswordHidden,
                     controller: _passwordController,
                     decoration: InputDecoration(
                       hintText: 'Mot de passe',
@@ -93,6 +161,17 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                         horizontal: 20,
                       ),
                       prefixIcon: Icon(Icons.lock, color: Colors.black87),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          setState(() {
+                            isPasswordHidden = !isPasswordHidden;
+                          });
+                        },
+                        icon: isPasswordHidden
+                            ? Icon(Icons.visibility_off)
+                            : Icon(Icons.visibility),
+                      ),
+
                       border: InputBorder.none,
                       filled: true,
                       fillColor: Color(0xFFedf0f8),
@@ -102,6 +181,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       ),
                       focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide(color: Colors.green, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 2),
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
@@ -132,42 +219,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     isLoading: ref.watch(isLoadingProvider),
                     title: 'CONNEXION',
                     color: Colors.green,
-                    onPressed: () async {
-                      if (_formKey.currentState!.validate()) {
-                        ref.read(isLoadingProvider.notifier).state = true;
-                        try {
-                          await AuthService().signIn(
-                            _emailController.text.trim(),
-                            _passwordController.text,
-                          );
-                          if (!context.mounted) {
-                            return;
-                          }
-                          Navigator.pushReplacementNamed(
-                            context,
-                            '/homeScreen',
-                          );
-                        } on FirebaseAuthException catch (e) {
-                          String message;
-                          switch (e.code) {
-                            case 'network-request-failed':
-                              message =
-                                  'Vérifiez votre connexion internet et réessayez';
-                              break;
-                            case 'invalid-credential':
-                              message = 'Email ou mot de passe incorrect';
-                              break;
-                            default:
-                              message = e.code;
-                          }
-                          ScaffoldMessenger.of(
-                            context,
-                          ).showSnackBar(SnackBar(content: Text(message)));
-                        } finally {
-                          ref.read(isLoadingProvider.notifier).state = false;
-                        }
-                      }
-                    },
+                    onPressed: login,
                   ),
                   SizedBox(height: 10),
                   Row(

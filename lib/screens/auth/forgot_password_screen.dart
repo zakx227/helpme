@@ -39,7 +39,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                     ),
                   ),
                   Text(
-                    'Veuillez renseigner votre email, vous allez recevoir un email contenant le lien de récuperation',
+                    'Veuillez renseigner votre email, vous allez recevoir un mail contenant le lien de récuperation',
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 18),
                   ),

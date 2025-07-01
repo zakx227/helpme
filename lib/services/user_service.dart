@@ -12,29 +12,27 @@ class UserService {
     String email,
     String quartier,
     String tel,
+    String role,
     String password,
   ) async {
-    try {
-      UserCredential userCredential = await _auth.signInWithEmailAndPassword(
-        email: email,
-        password: password,
-      );
-      String uid = userCredential.user!.uid;
-      UserModel userModel = UserModel(
-        uid: uid,
-        name: name,
-        email: email,
-        quartier: quartier,
-        tel: tel,
-      );
-      await _firestore
-          .collection('users')
-          .doc(userModel.uid)
-          .set(userModel.toJson());
-      return null;
-    } on FirebaseAuthException catch (e) {
-      return e.code.toString();
-    }
+    UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+      email: email,
+      password: password,
+    );
+    String uid = userCredential.user!.uid;
+    UserModel userModel = UserModel(
+      uid: uid,
+      name: name,
+      email: email,
+      quartier: quartier,
+      tel: tel,
+      role: role,
+    );
+    await _firestore
+        .collection('users')
+        .doc(userModel.uid)
+        .set(userModel.toJson());
+    return null;
   }
 
   //-------------------------Obtenir un user-----------------------
