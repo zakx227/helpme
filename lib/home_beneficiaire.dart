@@ -1,7 +1,6 @@
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:helpme/screens/beneficiaire/home_beneficiaire_screen.dart';
-import 'package:helpme/screens/beneficiaire/request_screen.dart';
 import 'package:helpme/screens/profile/profile_screen.dart';
 
 class HomeBeneficiaire extends StatefulWidget {
@@ -12,13 +11,9 @@ class HomeBeneficiaire extends StatefulWidget {
 }
 
 class _HomeState extends State<HomeBeneficiaire> {
-  final pages = [HomeBeneficiaireScreen(), RequestScreen(), ProfileScreen()];
+  final pages = [HomeBeneficiaireScreen(), ProfileScreen()];
   int index = 0;
-  final items = [
-    Icon(Icons.home, size: 30),
-    Icon(Icons.edit_document, size: 30),
-    Icon(Icons.person, size: 30),
-  ];
+  final items = [Icon(Icons.home, size: 30), Icon(Icons.person, size: 30)];
   @override
   Widget build(BuildContext context) {
     return SafeArea(

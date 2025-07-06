@@ -60,6 +60,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           selectedRole,
           _passwordController.text.trim(),
         );
+        if (!mounted) {
+          return;
+        }
         if (result == null) {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(

@@ -23,7 +23,7 @@ class _HomeState extends State<HomeAidant> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        appBar: AppBar(
+        /*  appBar: AppBar(
           leading: Text(''),
           centerTitle: true,
           title: Text(
@@ -34,7 +34,7 @@ class _HomeState extends State<HomeAidant> {
               color: Colors.green,
             ),
           ),
-        ),
+        ),*/
         body: pages[index],
         bottomNavigationBar: Theme(
           data: Theme.of(

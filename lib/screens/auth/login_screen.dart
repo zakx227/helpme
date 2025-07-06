@@ -33,6 +33,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           _emailController.text.trim(),
           _passwordController.text.trim(),
         );
+        if (!mounted) {
+          return;
+        }
         if (result == 'beneficiaire') {
           Navigator.pushReplacementNamed(context, '/beneficiaire');
         } else if (result == 'aidant') {
