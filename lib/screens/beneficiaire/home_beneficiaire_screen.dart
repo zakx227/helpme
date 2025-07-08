@@ -11,10 +11,21 @@ class HomeBeneficiaireScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final demandes = ref.watch(mesDemandesProvider);
     return Scaffold(
+      backgroundColor: Colors.white,
       body: demandes.when(
         data: (data) {
           if (data.isEmpty) {
-            return Center(child: Text('Aucune demande'));
+            return Center(
+              child: Text(
+                textAlign: TextAlign.center,
+                'Vous n\'avez aucune demande en cour \n Veuillez ajoute une demande pour commence l\'experience HelpMe',
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.green,
+                ),
+              ),
+            );
           }
           return ListView.builder(
             itemCount: data.length,
@@ -31,11 +42,19 @@ class HomeBeneficiaireScreen extends ConsumerWidget {
                   );
                 },
                 child: Card(
+                  color: Colors.green[100],
                   margin: EdgeInsets.all(10),
                   child: ListTile(
-                    title: Text(d.titre),
+                    title: Text(
+                      d.titre,
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
                     subtitle: Text(
-                      "${d.categorie} - ${d.date}\n${d.description}",
+                      "Date: ${d.date}\n${d.description}",
+                      style: TextStyle(fontSize: 13),
                     ),
                     isThreeLine: true,
                     trailing: Column(
@@ -57,7 +76,9 @@ class HomeBeneficiaireScreen extends ConsumerWidget {
             },
           );
         },
-        error: (error, stackTrace) => Center(child: Text(error.toString())),
+        error: (error, stackTrace) => Center(
+          child: Text("Une erreur inattendu est survenue veuillez recommence"),
+        ),
         loading: () => Center(child: CircularProgressIndicator()),
       ),
 

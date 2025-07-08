@@ -23,18 +23,19 @@ class _HomeState extends State<HomeAidant> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        /*  appBar: AppBar(
+        appBar: AppBar(
+          backgroundColor: Colors.green[50],
           leading: Text(''),
           centerTitle: true,
           title: Text(
-            'HelpMe Aidant',
+            'HELP-ME',
             style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 30,
+              fontSize: 19,
               color: Colors.green,
             ),
           ),
-        ),*/
+        ),
         body: pages[index],
         bottomNavigationBar: Theme(
           data: Theme.of(
@@ -42,7 +43,7 @@ class _HomeState extends State<HomeAidant> {
           ).copyWith(iconTheme: IconThemeData(color: Colors.white)),
           child: CurvedNavigationBar(
             color: Colors.green,
-            backgroundColor: Colors.transparent,
+            backgroundColor: Colors.white,
             height: 60,
             index: index,
             items: items,

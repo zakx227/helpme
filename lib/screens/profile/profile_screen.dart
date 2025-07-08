@@ -26,8 +26,17 @@ class ProfileScreen extends ConsumerWidget {
                   backgroundColor: Colors.white,
                   child: Image.asset('assets/images/logo.png'),
                 ),
-                title: Text(data.name),
-                subtitle: Text(data.email),
+                title: Text(
+                  data.name.toUpperCase(),
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                subtitle: Text(
+                  data.email,
+                  style: TextStyle(color: Colors.green),
+                ),
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
@@ -54,14 +63,14 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-
-              Divider(),
-
+              SizedBox(height: 10),
+              Divider(color: Colors.black),
+              SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   children: [
-                    Icon(Icons.info, size: 30),
+                    Icon(Icons.info, size: 30, color: Colors.black),
                     TextButton(
                       onPressed: () {},
                       child: Text(
@@ -72,7 +81,9 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              Divider(),
+              SizedBox(height: 10),
+              Divider(color: Colors.black),
+              SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(

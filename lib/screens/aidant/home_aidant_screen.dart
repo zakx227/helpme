@@ -6,9 +6,14 @@ import 'package:helpme/models/demande_model.dart';
 import 'package:helpme/models/propositions_model.dart';
 import 'package:helpme/provider/provider.dart';
 
-class HomeAidantScreen extends ConsumerWidget {
+class HomeAidantScreen extends ConsumerStatefulWidget {
   const HomeAidantScreen({super.key});
 
+  @override
+  ConsumerState<HomeAidantScreen> createState() => _HomeAidantScreenState();
+}
+
+class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
   Future<void> proposeAide(
     BuildContext context,
     DemandeModel demande,
@@ -51,70 +56,204 @@ class HomeAidantScreen extends ConsumerWidget {
           .set(proposition.toJson());
 
       ref.invalidate(existProposition((demande.uid, uid)));
-
+      ref.invalidate(mesPropositionsProvider);
+      if (!context.mounted) {
+        return;
+      }
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
             'Proposition envoyee',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
-          backgroundColor: Colors.red,
+          backgroundColor: Colors.green,
           behavior: SnackBarBehavior.floating,
         ),
       );
     }
   }
 
+  late final TextEditingController searchController;
+
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final demandes = ref.watch(demandePublique);
+  void initState() {
+    super.initState();
+    searchController = TextEditingController(text: ref.read(searchProvider));
+    searchController.addListener(() {
+      ref.read(searchProvider.notifier).state = searchController.text;
+    });
+  }
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final demandes = ref.watch(demandesFiltresProvider);
     final userUid = FirebaseAuth.instance.currentUser!.uid;
 
     return Scaffold(
-      body: demandes.when(
-        data: (data) {
-          if (data.isEmpty) {
-            return Center(child: Text('Aucune demande'));
-          }
-
-          return ListView.builder(
-            itemCount: data.length,
-            itemBuilder: (context, index) {
-              final d = data[index];
-              final dejaPropose = ref.watch(existProposition((d.uid, userUid)));
-
-              return Card(
-                child: ListTile(
-                  title: Text(d.titre),
-                  subtitle: Text(
-                    '${d.categorie} - ${d.lieu}\n${d.description}',
-                  ),
-                  isThreeLine: true,
-                  trailing: dejaPropose.when(
-                    data: (data) {
-                      return ElevatedButton(
-                        onPressed: data
-                            ? null
-                            : () {
-                                proposeAide(context, d, ref);
-                              },
-                        child: Text(data ? "Deja propose" : "Aide"),
-                      );
-                    },
-                    error: (error, stackTrace) => Icon(Icons.error),
-                    loading: () => SizedBox(
-                      height: 20,
-                      width: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
+      backgroundColor: Colors.white,
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(height: 10),
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextFormField(
+                    controller: searchController,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.green, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      hintText: 'Rechercher par lieu/catégorie',
+                      prefixIcon: Icon(Icons.search),
+                      suffixIcon: IconButton(
+                        onPressed: () {
+                          searchController.clear();
+                          ref.watch(searchProvider.notifier).state = '';
+                        },
+                        icon: Icon(Icons.clear),
+                      ),
                     ),
+                    onChanged: (value) =>
+                        ref.read(searchProvider.notifier).state = value,
                   ),
                 ),
-              );
-            },
-          );
-        },
-        error: (error, stackTrace) => Center(child: Text(error.toString())),
-        loading: () => Center(child: CircularProgressIndicator()),
+              ],
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 15),
+            child: Text(
+              "Demande d'aide public disponible : ",
+              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            ),
+          ),
+          Expanded(
+            child: demandes.when(
+              data: (data) {
+                if (data.isEmpty) {
+                  return Center(child: Text('Aucune demande d\'aide '));
+                }
+
+                return ListView.builder(
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final d = data[index];
+                    final dejaPropose = ref.watch(
+                      existProposition((d.uid, userUid)),
+                    );
+
+                    return Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Card(
+                        color: Colors.green[100],
+                        child: ListTile(
+                          title: Text(
+                            d.titre.toUpperCase(),
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          subtitle: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    'Date : ',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(d.date.toLowerCase()),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Categorie : ',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(d.categorie.toLowerCase()),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  Text(
+                                    'Lieu : ',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(d.lieu.toLowerCase()),
+                                ],
+                              ),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Description',
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                  Text(d.description.toLowerCase()),
+                                ],
+                              ),
+                            ],
+                          ),
+                          isThreeLine: true,
+                          trailing: dejaPropose.when(
+                            data: (data) {
+                              return ElevatedButton(
+                                onPressed: data
+                                    ? null
+                                    : () {
+                                        proposeAide(context, d, ref);
+                                      },
+                                child: Text(data ? "Deja propose" : "Aide"),
+                              );
+                            },
+                            error: (error, stackTrace) => Icon(Icons.error),
+                            loading: () => SizedBox(
+                              height: 20,
+                              width: 20,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            ),
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+              error: (error, stackTrace) =>
+                  Center(child: Text(error.toString())),
+              loading: () => Center(child: CircularProgressIndicator()),
+            ),
+          ),
+        ],
       ),
     );
   }

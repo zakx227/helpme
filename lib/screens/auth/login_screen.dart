@@ -62,7 +62,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             message = 'Email ou mot de passe incorrect';
             break;
           default:
-            message = e.code;
+            message = "Une erreur inattendu est survenue veuillez recommence";
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(

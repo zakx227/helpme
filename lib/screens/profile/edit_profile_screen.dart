@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:helpme/models/user_model.dart';
 import 'package:helpme/provider/provider.dart';
@@ -151,11 +152,19 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Numéro de téléphone invalide';
                         }
+
                         return null;
                       },
+                      maxLength: 8,
+                      inputFormatters: [
+                        FilteringTextInputFormatter.digitsOnly,
+                        LengthLimitingTextInputFormatter(8),
+                      ],
                       obscureText: false,
                       controller: telController,
                       decoration: InputDecoration(
+                        counterText: '',
+                        //   prefixText: '+227',
                         hintText: 'Telephone',
                         hintStyle: TextStyle(
                           color: Colors.black87,

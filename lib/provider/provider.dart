@@ -87,3 +87,68 @@ final existProposition =
           .get();
       return doc.exists;
     });
+
+final searchProvider = StateProvider<String>((ref) => '');
+
+final demandesFiltresProvider = StreamProvider<List<DemandeModel>>((ref) {
+  final search = ref.watch(searchProvider).toLowerCase();
+  return FirebaseFirestore.instance
+      .collection('demandes')
+      .where('cloture', isEqualTo: false)
+      .snapshots()
+      .map(
+        (snapshot) => snapshot.docs
+            .map((doc) => DemandeModel.fromJson(doc.data()))
+            .where(
+              (d) =>
+                  d.lieu.toLowerCase().contains(search) ||
+                  d.categorie.toLowerCase().contains(search),
+            )
+            .toList(),
+      );
+});
+
+final mesPropositionsProvider = FutureProvider<List<Map<String, dynamic>>>((
+  ref,
+) async {
+  final uid = FirebaseAuth.instance.currentUser!.uid;
+  final demandesSnap = await FirebaseFirestore.instance
+      .collection("demandes")
+      .get();
+
+  List<Map<String, dynamic>> historique = [];
+
+  for (final demandeDoc in demandesSnap.docs) {
+    final propDoc = await demandeDoc.reference
+        .collection("propositions")
+        .doc(uid)
+        .get();
+    if (propDoc.exists) {
+      final prop = PropositionsModel.fromJson(propDoc.data()!);
+      final demandeData = demandeDoc.data();
+      final titre = demandeData['titre'] ?? 'Demande supprimée';
+      final cloture = demandeData['cloture'] ?? false;
+      final userId = demandeData['userId'];
+
+      String nomBeneficiaire = "Bénéficiaire inconnu";
+      if (userId != null) {
+        final userDoc = await FirebaseFirestore.instance
+            .collection("users")
+            .doc(userId)
+            .get();
+        if (userDoc.exists) {
+          nomBeneficiaire = userDoc.data()?['name'] ?? nomBeneficiaire;
+        }
+      }
+
+      historique.add({
+        "proposition": prop,
+        "titre": titre,
+        "beneficiaire": nomBeneficiaire,
+        "cloture": cloture,
+      });
+    }
+  }
+
+  return historique;
+});

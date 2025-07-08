@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:helpme/services/user_service.dart';
 import 'package:helpme/widgets/custom_button.dart';
@@ -86,7 +87,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             message = 'Cet email est déjà utilisé.';
             break;
           default:
-            message = e.code;
+            message = "Une erreur inattendu est survenue veuillez recommence";
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -262,11 +263,23 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       if (value == null || value.isEmpty) {
                         return 'Numéro de téléphone invalide';
                       }
+                      final regex = RegExp(r'^[789]\d{7}$');
+                      if (!regex.hasMatch(value)) {
+                        return 'Numéro de téléphone invalide';
+                      }
                       return null;
                     },
+                    maxLength: 8,
+                    inputFormatters: [
+                      FilteringTextInputFormatter.digitsOnly,
+                      LengthLimitingTextInputFormatter(8),
+                    ],
+
                     obscureText: false,
                     controller: _telController,
                     decoration: InputDecoration(
+                      prefixText: '+227',
+                      counterText: '',
                       hintText: 'Telephone',
                       hintStyle: TextStyle(color: Colors.black87, fontSize: 18),
                       contentPadding: EdgeInsets.symmetric(

@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:helpme/models/demande_model.dart';
+
 import 'package:helpme/provider/provider.dart';
 import 'package:helpme/widgets/custom_button.dart';
 import 'package:uuid/uuid.dart';
@@ -25,6 +26,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
   final TextEditingController _lieuController = TextEditingController();
 
   final TextEditingController _dateController = TextEditingController();
+  DateTime date = DateTime.now();
 
   String categorie = 'Courses';
 
@@ -36,6 +38,8 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
   ];
   void saveDemande() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
+    String finalDate = '${date.day}/${date.month}/${date.year}';
+
     final demande = DemandeModel(
       uid: Uuid().v4(),
       userUid: uid,
@@ -43,7 +47,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
       description: _descriptionController.text,
       categorie: categorie,
       lieu: _lieuController.text,
-      date: _dateController.text,
+      date: finalDate,
     );
 
     if (_formKey.currentState!.validate()) {
@@ -57,18 +61,22 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Enregistrement reussi !',
+              'Demande ajoute',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
           ),
         );
+        _titreController.clear();
+        _descriptionController.clear();
+        _lieuController.clear();
+        _dateController.clear();
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              e.toString(),
+              "Une erreur inattendu est survenue veuillez recommence",
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             backgroundColor: Colors.green,
@@ -84,7 +92,23 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: Colors.white,
+      appBar: AppBar(
+        centerTitle: true,
+        title: Text(
+          'AJOUTE UNE DEMANDE',
+          style: TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        ),
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: Icon(Icons.arrow_back_ios, color: Colors.green),
+        ),
+      ),
       body: SingleChildScrollView(
         child: Form(
           key: _formKey,
@@ -92,6 +116,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
             padding: EdgeInsetsGeometry.symmetric(horizontal: 30),
             child: Column(
               children: [
+                SizedBox(height: 20),
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -108,7 +133,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                       vertical: 15,
                       horizontal: 20,
                     ),
-                    prefixIcon: Icon(Icons.person, color: Colors.black87),
+
                     border: InputBorder.none,
                     filled: true,
                     fillColor: Color(0xFFedf0f8),
@@ -148,7 +173,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                       vertical: 15,
                       horizontal: 20,
                     ),
-                    prefixIcon: Icon(Icons.person, color: Colors.black87),
+
                     border: InputBorder.none,
                     filled: true,
                     fillColor: Color(0xFFedf0f8),
@@ -181,9 +206,29 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                   onChanged: (value) => setState(() {
                     categorie = value!;
                   }),
-                  decoration: InputDecoration(labelText: "Categorie"),
+                  decoration: InputDecoration(
+                    labelText: "Categorie",
+                    border: InputBorder.none,
+                    filled: true,
+                    fillColor: Color(0xFFedf0f8),
+
+                    labelStyle: TextStyle(
+                      color: Colors.black87,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 20,
+                    ),
+                    enabledBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green, width: 2),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderSide: BorderSide(color: Colors.green, width: 2),
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                  ),
                 ),
-                SizedBox(height: 10),
+
+                SizedBox(height: 20),
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -200,7 +245,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                       vertical: 15,
                       horizontal: 20,
                     ),
-                    prefixIcon: Icon(Icons.person, color: Colors.black87),
+
                     border: InputBorder.none,
                     filled: true,
                     fillColor: Color(0xFFedf0f8),
@@ -222,23 +267,21 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                     ),
                   ),
                 ),
+                SizedBox(height: 20),
                 TextFormField(
-                  validator: (value) {
-                    if (value == null || value.isEmpty) {
-                      return 'Le date est requis';
-                    }
-                    return null;
-                  },
+                  readOnly: true,
+                  onTap: getDate,
                   obscureText: false,
                   controller: _dateController,
                   decoration: InputDecoration(
-                    hintText: 'Date',
+                    prefixIcon: Icon(Icons.calendar_month_outlined),
+                    hintText: '${date.day}/${date.month}/${date.year}',
                     hintStyle: TextStyle(color: Colors.black87, fontSize: 18),
                     contentPadding: EdgeInsets.symmetric(
                       vertical: 15,
                       horizontal: 20,
                     ),
-                    prefixIcon: Icon(Icons.person, color: Colors.black87),
+
                     border: InputBorder.none,
                     filled: true,
                     fillColor: Color(0xFFedf0f8),
@@ -262,7 +305,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                 ),
                 SizedBox(height: 20),
                 CustomButton(
-                  title: 'CREER VOTREZ COMPTE',
+                  title: 'Ajouter',
                   color: Colors.green,
                   onPressed: () {
                     saveDemande();
@@ -276,5 +319,18 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
         ),
       ),
     );
+  }
+
+  getDate() async {
+    DateTime? pickerDate = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2025),
+      lastDate: DateTime(2121),
+    );
+    if (pickerDate != null) {
+      setState(() {
+        date = pickerDate;
+      });
+    }
   }
 }
