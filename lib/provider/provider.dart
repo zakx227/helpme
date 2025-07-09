@@ -10,6 +10,7 @@ import 'package:helpme/sqlite/sqlite_service.dart';
 
 final isLoadingProvider = StateProvider((ref) => false);
 
+//----------------------- Provider pour recupere un user avec son uid-----------------------
 final authStateProvider = StreamProvider((ref) {
   return FirebaseAuth.instance.authStateChanges();
 });
@@ -28,6 +29,8 @@ final userProvider = FutureProvider<UserModel?>((ref) async {
 
 //-------------------------------------------------------------------
 
+//------------------------Provider pour recupere une demande en base de donnes local---------------
+
 final sqliteProvider = Provider<SqliteService>((ref) => SqliteService());
 final demandeServiceProvider = Provider<DemandeService>(
   (ref) => DemandeService(),
@@ -37,7 +40,9 @@ final demandeProvider = FutureProvider<List<DemandeModel>>((ref) async {
   final db = ref.watch(sqliteProvider);
   return db.getDemandes();
 });
+//------------------------------------------------------------------------------
 
+//-----------------------Provider pour recupere les demandes d'un user -----------------
 final mesDemandesProvider = FutureProvider<List<DemandeModel>>((ref) async {
   final uid = FirebaseAuth.instance.currentUser!.uid;
   final snapshot = await FirebaseFirestore.instance
@@ -46,7 +51,9 @@ final mesDemandesProvider = FutureProvider<List<DemandeModel>>((ref) async {
       .get();
   return snapshot.docs.map((doc) => DemandeModel.fromJson(doc.data())).toList();
 });
+//---------------------------------------------------------------------------------------
 
+//-------------------------Provider pour ecouter les demandes public ---------------------------
 final demandePublique = StreamProvider<List<DemandeModel>>((ref) {
   final query = FirebaseFirestore.instance
       .collection('demandes')
@@ -59,6 +66,9 @@ final demandePublique = StreamProvider<List<DemandeModel>>((ref) {
   });
 });
 
+//--------------------------------------------------------------------------------------------------
+
+//------------------------Provider pour recupere les proposition d'un user----------------------------
 final propositionsProvider =
     StreamProvider.family<List<PropositionsModel>, String>((ref, demandUid) {
       final stream = FirebaseFirestore.instance
@@ -73,6 +83,9 @@ final propositionsProvider =
       );
     });
 
+//---------------------------------------------------------------------------------------
+
+//---------------------------Provider pour verifier si une proposition existe--------------------
 final existProposition =
     FutureProvider.family<bool, (String demandeUid, String userUid)>((
       ref,
@@ -88,6 +101,9 @@ final existProposition =
       return doc.exists;
     });
 
+//--------------------------------------------------------------------------------------------
+
+//-------------------------- Provider pour filtre les demande par recherche ------------------------
 final searchProvider = StateProvider<String>((ref) => '');
 
 final demandesFiltresProvider = StreamProvider<List<DemandeModel>>((ref) {
@@ -108,6 +124,9 @@ final demandesFiltresProvider = StreamProvider<List<DemandeModel>>((ref) {
       );
 });
 
+//-----------------------------------------------------------------------------------------------
+
+//------------------------Provider pour recupere les proposition d'un user pou l'historique---------------
 final mesPropositionsProvider = FutureProvider<List<Map<String, dynamic>>>((
   ref,
 ) async {
@@ -152,3 +171,4 @@ final mesPropositionsProvider = FutureProvider<List<Map<String, dynamic>>>((
 
   return historique;
 });
+//-----------------------------------------------------------------------------------------------------------

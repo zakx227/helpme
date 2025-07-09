@@ -30,12 +30,16 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
 
   String categorie = 'Courses';
 
+  //--------------Liste des categorie ----------------------------
   final List<String> categories = [
     'Courses',
     'Baby-sitting',
     'Bricolage',
     'Autre',
   ];
+  //-----------------------------------------------------------------
+
+  //--------------------Fonction pour enregistre une demande------------------------------
   void saveDemande() async {
     final uid = FirebaseAuth.instance.currentUser!.uid;
     String finalDate = '${date.day}/${date.month}/${date.year}';
@@ -88,7 +92,23 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
       }
     }
   }
+  //----------------------------------------------------------------------------------
 
+  //--------------------Fonction recupere une date---------------------------------------
+  getDate() async {
+    DateTime? pickerDate = await showDatePicker(
+      context: context,
+      firstDate: DateTime(2025),
+      lastDate: DateTime(2121),
+    );
+    if (pickerDate != null) {
+      setState(() {
+        date = pickerDate;
+      });
+    }
+  }
+
+  //-----------------------------------------------------------------------------------------
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -117,6 +137,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
             child: Column(
               children: [
                 SizedBox(height: 20),
+                //--------------------TextFormFilel pour titre -----------------------------------------
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -156,6 +177,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
+                //--------------------TextFormFilel pour description -----------------------------------------
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -196,6 +218,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                   ),
                 ),
                 SizedBox(height: 10),
+                //--------------------TextFormFilel pour categorie -----------------------------------------
                 DropdownButtonFormField(
                   value: categorie,
                   items: categories
@@ -229,6 +252,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                 ),
 
                 SizedBox(height: 20),
+                //--------------------TextFormFilel pour lieu -----------------------------------------
                 TextFormField(
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -268,6 +292,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                   ),
                 ),
                 SizedBox(height: 20),
+                //--------------------TextFormFilel pour date -----------------------------------------
                 TextFormField(
                   readOnly: true,
                   onTap: getDate,
@@ -319,18 +344,5 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
         ),
       ),
     );
-  }
-
-  getDate() async {
-    DateTime? pickerDate = await showDatePicker(
-      context: context,
-      firstDate: DateTime(2025),
-      lastDate: DateTime(2121),
-    );
-    if (pickerDate != null) {
-      setState(() {
-        date = pickerDate;
-      });
-    }
   }
 }

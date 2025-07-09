@@ -14,6 +14,7 @@ class HomeAidantScreen extends ConsumerStatefulWidget {
 }
 
 class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
+  //------------------- Fonction pour Propose son aide -------------------------------------------
   Future<void> proposeAide(
     BuildContext context,
     DemandeModel demande,
@@ -72,6 +73,8 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
       );
     }
   }
+
+  //---------------------------------------------------------------------------------------------------
 
   late final TextEditingController searchController;
 

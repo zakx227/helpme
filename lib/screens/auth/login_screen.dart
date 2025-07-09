@@ -25,6 +25,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
     super.dispose();
   }
 
+  //--------------------------- Fontion pour le login --------------------------------------------------
   void login() async {
     if (_formKey.currentState!.validate()) {
       ref.read(isLoadingProvider.notifier).state = true;
@@ -79,6 +80,8 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       }
     }
   }
+
+  //----------------------------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {

@@ -37,6 +37,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     super.dispose();
   }
 
+  //----------------------Fonction pour enregistre un user -----------------------------------
+
   void register() async {
     if (!passwordConfirm()) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -104,7 +106,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       }
     }
   }
+  //-------------------------------------------------------------------------------------
 
+  //----------------------Fonction pour verifier le mot de passe ---------------------
   bool passwordConfirm() {
     if (_passwordController.text.trim() ==
         _confirmPasswordController.text.trim()) {
@@ -112,6 +116,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     }
     return false;
   }
+  //-------------------------------------------------------------------------------------------
 
   @override
   Widget build(BuildContext context) {
@@ -180,6 +185,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
+                  //--------------------TextFormFilel pour email -----------------------------------------
                   TextFormField(
                     validator: (value) {
                       if (value == null || !value.contains('@')) {
@@ -218,7 +224,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       ),
                     ),
                   ),
+
                   SizedBox(height: 20),
+                  //--------------------TextFormFilel pour quartier -----------------------------------------
                   TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -258,6 +266,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
+                  //--------------------TextFormFilel pour le numero -----------------------------------------
                   TextFormField(
                     validator: (value) {
                       if (value == null || value.isEmpty) {
@@ -309,6 +318,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
+
+                  //--------------------TextFormFilel pour role -----------------------------------------
                   DropdownButtonFormField<String>(
                     value: selectedRole,
                     items: [
@@ -345,6 +356,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
+                  //--------------------TextFormFilel pour mot de passe -----------------------------------------
                   TextFormField(
                     validator: (value) {
                       if (value == null || value.length < 6) {
@@ -395,6 +407,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
                   SizedBox(height: 20),
+                  //--------------------TextFormFilel pour confirmation mot de passe -----------------------------------------
                   TextFormField(
                     validator: (value) {
                       if (value == null || value.length < 6) {

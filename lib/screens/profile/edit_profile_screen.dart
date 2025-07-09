@@ -63,6 +63,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ),
                     ),
                     SizedBox(height: 10),
+                    //--------------------TextFormFilel pour le nom -----------------------------------------
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -105,6 +106,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
+                    //--------------------TextFormFilel pour le quartier -----------------------------------------
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -147,6 +149,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       ),
                     ),
                     SizedBox(height: 20),
+                    //--------------------TextFormFilel pour le numero -----------------------------------------
                     TextFormField(
                       validator: (value) {
                         if (value == null || value.isEmpty) {
@@ -201,6 +204,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                       title: 'MODIFIER',
                       color: Colors.green,
                       onPressed: () async {
+                        //--------------------Fonction pour modifier un user -----------------------------------------
                         if (_formKey.currentState!.validate()) {
                           ref.read(isLoading.notifier).state = true;
                           try {

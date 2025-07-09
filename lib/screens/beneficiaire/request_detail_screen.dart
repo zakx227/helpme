@@ -21,6 +21,7 @@ class RequestDetailScreen extends ConsumerStatefulWidget {
 class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
   bool? cloture = false;
 
+  //--------------------- Fonction recupere les proposition-----------------------------------
   Future<List<PropositionsModel>> fetchProposition() async {
     final snapshot = await FirebaseFirestore.instance
         .collection('dmande')
@@ -31,7 +32,9 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
         .map((doc) => PropositionsModel.fromJson(doc.data()))
         .toList();
   }
+  //---------------------------------------------------------------------------------------------
 
+  //---------------------------Fonction cloture une demande ----------------------------------
   Future clotureDemande() async {
     try {
       await FirebaseFirestore.instance
@@ -68,6 +71,9 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
     }
   }
 
+  //--------------------------------------------------------------------------------------
+
+  //-----------------------Fonction pour recupere un user -------------------------------------
   Future<UserModel?> fetchUser(String uid) async {
     final doc = await FirebaseFirestore.instance
         .collection('users')
@@ -78,6 +84,7 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
     }
     return UserModel.fromJson(doc.data()!);
   }
+  //-----------------------------------------------------------------------------------------
 
   @override
   void initState() {
