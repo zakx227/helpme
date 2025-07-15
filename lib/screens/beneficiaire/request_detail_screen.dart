@@ -8,6 +8,7 @@ import 'package:helpme/provider/provider.dart';
 import 'package:helpme/widgets/custom_button.dart';
 
 final isLoading = StateProvider((ref) => false);
+final isLoadingCloture = StateProvider((ref) => false);
 
 class RequestDetailScreen extends ConsumerStatefulWidget {
   final DemandeModel demandeModel;
@@ -221,23 +222,36 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
             ),
             cloture == false
                 ? SizedBox(
-                    height: 50,
+                    height: 80,
                     width: 200,
-                    child: ElevatedButton.icon(
+                    child: CustomButton(
+                      color: Colors.red,
+                      title: "Cloture la demande",
+                      isLoading: ref.watch(isLoadingCloture),
                       onPressed: () {
-                        clotureDemande();
-                        ref.invalidate(mesDemandesProvider);
+                        try {
+                          ref.read(isLoadingCloture.notifier).state = true;
+                          clotureDemande();
+                          ref.invalidate(mesDemandesProvider);
+                          ref.invalidate(mesPropositionsProvider);
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                "Une erreur inattendu est survenue veuillez recommence",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              backgroundColor: Colors.red,
+                              behavior: SnackBarBehavior.floating,
+                            ),
+                          );
+                        } finally {
+                          ref.read(isLoadingCloture.notifier).state = false;
+                        }
                       },
-                      label: Text(
-                        "Cloture la demande",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
                     ),
                   )
                 : Row(
@@ -311,6 +325,31 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
     );
   }
 }
+
+/*
+ElevatedButton.icon(
+                      onPressed: () {
+                     
+                          isLoadingCloture = true;
+                          clotureDemande();
+                          ref.invalidate(mesDemandesProvider);
+                          ref.invalidate(mesPropositionsProvider);
+                      },
+                      label: Text(
+                        isLoadingCloture
+                            ? CircularProgressIndicator().toString()
+                            : "Cloture la demande",
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.red,
+                      ),
+                    ),
+
+*/
 
 /*
  ElevatedButton(

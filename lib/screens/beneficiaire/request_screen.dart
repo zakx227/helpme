@@ -80,10 +80,10 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              "Une erreur inattendu est survenue veuillez recommence",
+              'Une erreur inattendu est survenue veuillez recommence',
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            backgroundColor: Colors.green,
+            backgroundColor: Colors.red,
             behavior: SnackBarBehavior.floating,
           ),
         );

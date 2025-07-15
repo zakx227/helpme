@@ -29,7 +29,7 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
         content: TextField(
           controller: controller,
           maxLines: 3,
-          decoration: InputDecoration(hintText: "Ex : je peux vous aide"),
+          decoration: InputDecoration(hintText: "Ex : je peux vous aider"),
         ),
         actions: [
           TextButton(
@@ -100,163 +100,190 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
 
     return Scaffold(
       backgroundColor: Colors.white,
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          SizedBox(height: 10),
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: Row(
-              children: [
-                Expanded(
-                  child: TextFormField(
-                    controller: searchController,
-                    decoration: InputDecoration(
-                      border: InputBorder.none,
-                      enabledBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green, width: 2),
-                        borderRadius: BorderRadius.circular(30),
+      body: RefreshIndicator(
+        color: Colors.green,
+        onRefresh: () => ref.refresh(demandesFiltresProvider.future),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10),
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: TextFormField(
+                      controller: searchController,
+                      decoration: InputDecoration(
+                        border: InputBorder.none,
+                        enabledBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green, width: 2),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        focusedBorder: OutlineInputBorder(
+                          borderSide: BorderSide(color: Colors.green, width: 2),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        hintText: 'Rechercher par lieu/catégorie',
+                        prefixIcon: Icon(Icons.search),
+                        suffixIcon: IconButton(
+                          onPressed: () {
+                            searchController.clear();
+                            ref.watch(searchProvider.notifier).state = '';
+                          },
+                          icon: Icon(Icons.clear),
+                        ),
                       ),
-                      focusedBorder: OutlineInputBorder(
-                        borderSide: BorderSide(color: Colors.green, width: 2),
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                      hintText: 'Rechercher par lieu/catégorie',
-                      prefixIcon: Icon(Icons.search),
-                      suffixIcon: IconButton(
-                        onPressed: () {
-                          searchController.clear();
-                          ref.watch(searchProvider.notifier).state = '';
-                        },
-                        icon: Icon(Icons.clear),
-                      ),
+                      onChanged: (value) =>
+                          ref.read(searchProvider.notifier).state = value,
                     ),
-                    onChanged: (value) =>
-                        ref.read(searchProvider.notifier).state = value,
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(left: 15),
-            child: Text(
-              "Demande d'aide public disponible : ",
-              style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
+              child: Text(
+                "Demande d'aide public disponible : ",
+                style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              ),
             ),
-          ),
-          Expanded(
-            child: demandes.when(
-              data: (data) {
-                if (data.isEmpty) {
-                  return Center(child: Text('Aucune demande d\'aide '));
-                }
-
-                return ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    final d = data[index];
-                    final dejaPropose = ref.watch(
-                      existProposition((d.uid, userUid)),
+            Expanded(
+              child: demandes.when(
+                data: (data) {
+                  if (data.isEmpty) {
+                    return Center(
+                      child: Text('Aucune demande d\'aide disponible'),
                     );
+                  }
 
-                    return Padding(
-                      padding: const EdgeInsets.all(10),
-                      child: Card(
-                        color: Colors.green[100],
-                        child: ListTile(
-                          title: Text(
-                            d.titre.toUpperCase(),
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
+                  return ListView.builder(
+                    itemCount: data.length,
+                    itemBuilder: (context, index) {
+                      final d = data[index];
+                      final dejaPropose = ref.watch(
+                        existProposition((d.uid, userUid)),
+                      );
+
+                      return Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: Card(
+                          color: Colors.teal[50],
+                          child: ListTile(
+                            title: Text(
+                              d.titre.toUpperCase(),
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
-                          subtitle: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    'Date : ',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                            subtitle: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Date : ',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(d.date.toLowerCase()),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Categorie : ',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                                    Text(d.date.toLowerCase()),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Categorie : ',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(d.categorie.toLowerCase()),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Lieu : ',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                                    Text(d.categorie.toLowerCase()),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Lieu : ',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(d.lieu.toLowerCase()),
-                                ],
-                              ),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'Description',
-                                    style: TextStyle(
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
+                                    Text(d.lieu.toLowerCase()),
+                                  ],
+                                ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Description',
+                                      style: TextStyle(
+                                        fontSize: 15,
+                                        fontWeight: FontWeight.bold,
+                                      ),
                                     ),
-                                  ),
-                                  Text(d.description.toLowerCase()),
-                                ],
+                                    Text(d.description.toLowerCase()),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            isThreeLine: true,
+                            trailing: dejaPropose.when(
+                              data: (data) {
+                                return ElevatedButton(
+                                  onPressed: data
+                                      ? null
+                                      : () {
+                                          try {
+                                            proposeAide(context, d, ref);
+                                          } catch (e) {
+                                            ScaffoldMessenger.of(
+                                              context,
+                                            ).showSnackBar(
+                                              SnackBar(
+                                                content: Text(
+                                                  e.toString(),
+                                                  style: TextStyle(
+                                                    fontSize: 18,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                                backgroundColor: Colors.green,
+                                                behavior:
+                                                    SnackBarBehavior.floating,
+                                              ),
+                                            );
+                                          }
+                                        },
+                                  child: Text(data ? "Deja propose" : "Aide"),
+                                );
+                              },
+                              error: (error, stackTrace) => Icon(Icons.error),
+                              loading: () => SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                ),
                               ),
-                            ],
-                          ),
-                          isThreeLine: true,
-                          trailing: dejaPropose.when(
-                            data: (data) {
-                              return ElevatedButton(
-                                onPressed: data
-                                    ? null
-                                    : () {
-                                        proposeAide(context, d, ref);
-                                      },
-                                child: Text(data ? "Deja propose" : "Aide"),
-                              );
-                            },
-                            error: (error, stackTrace) => Icon(Icons.error),
-                            loading: () => SizedBox(
-                              height: 20,
-                              width: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2),
                             ),
                           ),
                         ),
-                      ),
-                    );
-                  },
-                );
-              },
-              error: (error, stackTrace) =>
-                  Center(child: Text(error.toString())),
-              loading: () => Center(child: CircularProgressIndicator()),
+                      );
+                    },
+                  );
+                },
+                error: (error, stackTrace) =>
+                    Center(child: Text(error.toString())),
+                loading: () => Center(child: CircularProgressIndicator()),
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

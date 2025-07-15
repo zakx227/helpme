@@ -2,6 +2,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:helpme/provider/provider.dart';
+import 'package:helpme/screens/apropos_screen.dart';
 import 'package:helpme/screens/profile/edit_profile_screen.dart';
 
 class ProfileScreen extends ConsumerWidget {
@@ -19,11 +20,10 @@ class ProfileScreen extends ConsumerWidget {
           }
           return ListView(
             children: [
-              SizedBox(height: 30),
               ListTile(
                 leading: CircleAvatar(
                   radius: 30,
-                  backgroundColor: Colors.white,
+                  backgroundColor: Colors.green[100],
                   child: Image.asset('assets/images/logo.png'),
                 ),
                 title: Text(
@@ -38,6 +38,7 @@ class ProfileScreen extends ConsumerWidget {
                   style: TextStyle(color: Colors.green),
                 ),
               ),
+
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 50),
                 child: ElevatedButton(
@@ -63,16 +64,23 @@ class ProfileScreen extends ConsumerWidget {
                   ),
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Divider(color: Colors.black),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(
                   children: [
                     Icon(Icons.info, size: 30, color: Colors.black),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AproposScreen(),
+                          ),
+                        );
+                      },
                       child: Text(
                         'A propos',
                         style: TextStyle(fontSize: 20, color: Colors.black),
@@ -81,9 +89,9 @@ class ProfileScreen extends ConsumerWidget {
                   ],
                 ),
               ),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Divider(color: Colors.black),
-              SizedBox(height: 10),
+              SizedBox(height: 20),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10),
                 child: Row(

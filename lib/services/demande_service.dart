@@ -7,15 +7,17 @@ class DemandeService {
   //--------------------Enregistrement d'une demande -----------------------------------------
 
   Future<void> saveDemande(DemandeModel demande) async {
-    try {
-      await _firestore
-          .collection('demandes')
-          .doc(demande.uid)
-          .set(demande.toJson());
-    } on FirebaseException catch (e) {
-      throw Exception(
-        '${e.toString()} Une erreur inattendu est survenue veuillez recommence',
-      );
-    }
+    await _firestore
+        .collection('demandes')
+        .doc(demande.uid)
+        .set(demande.toJson());
   }
+}
+
+Future<void> deleteDemande(DemandeModel demande) async {
+  await FirebaseFirestore.instance
+      .collection('demandes')
+      .doc(demande.uid)
+      .delete()
+      .catchError(throw Exception());
 }

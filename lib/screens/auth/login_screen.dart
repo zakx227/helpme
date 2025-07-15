@@ -51,6 +51,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             ),
             backgroundColor: Colors.green,
             behavior: SnackBarBehavior.floating,
+            duration: Duration(seconds: 2),
           ),
         );
       } on FirebaseAuthException catch (e) {

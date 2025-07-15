@@ -145,18 +145,18 @@ final mesPropositionsProvider = FutureProvider<List<Map<String, dynamic>>>((
     if (propDoc.exists) {
       final prop = PropositionsModel.fromJson(propDoc.data()!);
       final demandeData = demandeDoc.data();
-      final titre = demandeData['titre'] ?? 'Demande supprimée';
-      final cloture = demandeData['cloture'] ?? false;
-      final userId = demandeData['userId'];
+      final titre = demandeData['titre'];
+      final cloture = demandeData['cloture'];
+      final userUid = demandeData['userUid'];
 
-      String nomBeneficiaire = "Bénéficiaire inconnu";
-      if (userId != null) {
+      String nomBeneficiaire = "";
+      if (userUid != null) {
         final userDoc = await FirebaseFirestore.instance
             .collection("users")
-            .doc(userId)
+            .doc(userUid)
             .get();
         if (userDoc.exists) {
-          nomBeneficiaire = userDoc.data()?['name'] ?? nomBeneficiaire;
+          nomBeneficiaire = userDoc.data()!['name'];
         }
       }
 

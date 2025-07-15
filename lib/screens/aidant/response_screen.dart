@@ -16,7 +16,7 @@ class ResponseScreen extends ConsumerWidget {
         leading: Text(''),
         title: const Text(
           "Mes aides proposées",
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.teal),
         ),
       ),
       body: historique.when(
@@ -33,13 +33,62 @@ class ResponseScreen extends ConsumerWidget {
               final beneficiaire = list[index]['beneficiaire'];
               final cloture = list[index]['cloture'] as bool;
 
-              return ListTile(
-                leading: const Icon(Icons.history),
-                title: Text("Message : ${prop.message}"),
-                subtitle: Text(
-                  "Titre : $titre\nNom : $beneficiaire\nStatut : ${cloture ? 'Clôturée' : 'Active'}",
+              return Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 10,
+                  vertical: 5,
                 ),
-                isThreeLine: true,
+                child: Card(
+                  elevation: 5,
+                  color: Colors.teal[50],
+                  child: ListTile(
+                    title: Row(
+                      children: [
+                        Text(
+                          "Message : ",
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                        Text(prop.message),
+                      ],
+                    ),
+                    subtitle: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              "Titre : ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(titre),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Nom beneficiaire : ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(beneficiaire),
+                          ],
+                        ),
+                        Row(
+                          children: [
+                            Text(
+                              "Statut : ",
+                              style: TextStyle(fontWeight: FontWeight.bold),
+                            ),
+                            Text(
+                              cloture ? "Cloturée" : "Active",
+                              style: TextStyle(
+                                color: cloture ? Colors.red : Colors.green,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
               );
             },
           );
@@ -52,3 +101,15 @@ class ResponseScreen extends ConsumerWidget {
     );
   }
 }
+
+
+/*
+ListTile(
+                leading: const Icon(Icons.history),
+                title: Text("Message : ${prop.message}"),
+                subtitle: Text(
+                  "Titre : $titre\nNom beneficiaire : $beneficiaire\nStatut : ${cloture ? 'Clôturée' : 'Active'}",
+                ),
+                isThreeLine: true,
+              );
+*/
