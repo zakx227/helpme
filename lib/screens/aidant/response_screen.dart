@@ -11,105 +11,121 @@ class ResponseScreen extends ConsumerWidget {
     final historique = ref.watch(mesPropositionsProvider);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        leading: Text(''),
-        title: const Text(
-          "Mes aides proposées",
-          style: TextStyle(fontWeight: FontWeight.w500, color: Colors.teal),
-        ),
-      ),
-      body: historique.when(
-        data: (list) {
-          if (list.isEmpty) {
-            return const Center(child: Text("Aucune aide proposée."));
-          }
 
-          return ListView.builder(
-            itemCount: list.length,
-            itemBuilder: (context, index) {
-              final prop = list[index]['proposition'] as PropositionsModel;
-              final titre = list[index]['titre'];
-              final beneficiaire = list[index]['beneficiaire'];
-              final cloture = list[index]['cloture'] as bool;
+      body: RefreshIndicator(
+        color: Colors.green,
+        onRefresh: () => ref.refresh(mesPropositionsProvider.future),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            SizedBox(height: 10),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "Mes aides proposées:",
+                style: TextStyle(
+                  fontWeight: FontWeight.w300,
+                  color: Colors.green,
+                  fontSize: 25,
+                  // decoration: TextDecoration.underline,
+                  // decorationColor: Colors.green,
+                  // decorationThickness: 2,
+                ),
+              ),
+            ),
+            Expanded(
+              child: historique.when(
+                data: (list) {
+                  if (list.isEmpty) {
+                    return const Center(child: Text("Aucune aide proposée."));
+                  }
 
-              return Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 10,
-                  vertical: 5,
+                  return ListView.builder(
+                    itemCount: list.length,
+                    itemBuilder: (context, index) {
+                      final prop =
+                          list[index]['proposition'] as PropositionsModel;
+                      final titre = list[index]['titre'];
+                      final beneficiaire = list[index]['beneficiaire'];
+                      final cloture = list[index]['cloture'] as bool;
+
+                      return Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        child: Card(
+                          elevation: 5,
+                          color: Colors.teal[50],
+                          child: ListTile(
+                            title: Row(
+                              children: [
+                                Text(
+                                  "Message : ",
+                                  style: TextStyle(fontWeight: FontWeight.bold),
+                                ),
+                                Text(prop.message),
+                              ],
+                            ),
+                            subtitle: Column(
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Titre : ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(titre),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Nom bénéficiaire : ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(beneficiaire),
+                                  ],
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      "Statut : ",
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      cloture ? "Cloturée" : "Active",
+                                      style: TextStyle(
+                                        color: cloture
+                                            ? Colors.red
+                                            : Colors.green,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+                loading: () => const Center(child: CircularProgressIndicator()),
+                error: (e, _) => Center(
+                  child: Text("Une erreur est survenue, veuillez réessayer."),
                 ),
-                child: Card(
-                  elevation: 5,
-                  color: Colors.teal[50],
-                  child: ListTile(
-                    title: Row(
-                      children: [
-                        Text(
-                          "Message : ",
-                          style: TextStyle(fontWeight: FontWeight.bold),
-                        ),
-                        Text(prop.message),
-                      ],
-                    ),
-                    subtitle: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Titre : ",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(titre),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "Nom beneficiaire : ",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(beneficiaire),
-                          ],
-                        ),
-                        Row(
-                          children: [
-                            Text(
-                              "Statut : ",
-                              style: TextStyle(fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              cloture ? "Cloturée" : "Active",
-                              style: TextStyle(
-                                color: cloture ? Colors.red : Colors.green,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
-        },
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(
-          child: Text("Une erreur inattendu est survenue veuillez recommence"),
+              ),
+            ),
+          ],
         ),
       ),
     );
   }
 }
-
-
-/*
-ListTile(
-                leading: const Icon(Icons.history),
-                title: Text("Message : ${prop.message}"),
-                subtitle: Text(
-                  "Titre : $titre\nNom beneficiaire : $beneficiaire\nStatut : ${cloture ? 'Clôturée' : 'Active'}",
-                ),
-                isThreeLine: true,
-              );
-*/

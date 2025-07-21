@@ -18,7 +18,7 @@ class HomeBeneficiaireScreen extends ConsumerWidget {
             return Center(
               child: Text(
                 textAlign: TextAlign.center,
-                'Vous n\'avez aucune demande en cour \n Veuillez ajoute une demande pour commence l\'experience HelpMe',
+                "Aucune demande trouvée.\nVous pouvez en créer une en appuyant sur le bouton '+' en bas à droite.",
                 style: TextStyle(
                   fontSize: 18,
                   fontWeight: FontWeight.bold,
@@ -42,6 +42,7 @@ class HomeBeneficiaireScreen extends ConsumerWidget {
                   );
                 },
                 child: Card(
+                  elevation: 5,
                   color: Colors.teal[50],
                   margin: EdgeInsets.all(10),
                   child: ListTile(
@@ -76,9 +77,8 @@ class HomeBeneficiaireScreen extends ConsumerWidget {
             },
           );
         },
-        error: (error, stackTrace) => Center(
-          child: Text("Une erreur inattendu est survenue veuillez recommence"),
-        ),
+        error: (error, stackTrace) =>
+            Center(child: Text("Une erreur est survenue, veuillez réessayer.")),
         loading: () => Center(child: CircularProgressIndicator()),
       ),
 

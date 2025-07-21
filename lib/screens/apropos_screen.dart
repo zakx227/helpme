@@ -9,7 +9,7 @@ class AproposScreen extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          "A propos",
+          "À propos",
           style: TextStyle(
             fontSize: 25,
             fontWeight: FontWeight.bold,

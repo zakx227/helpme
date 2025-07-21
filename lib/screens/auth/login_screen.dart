@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:helpme/provider/provider.dart';
@@ -34,6 +36,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           _emailController.text.trim(),
           _passwordController.text.trim(),
         );
+
         if (!mounted) {
           return;
         }
@@ -64,7 +67,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
             message = 'Email ou mot de passe incorrect';
             break;
           default:
-            message = "Une erreur inattendu est survenue veuillez recommence";
+            message = "Une erreur est survenue, veuillez réessayer.";
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -79,6 +82,15 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       } finally {
         ref.read(isLoadingProvider.notifier).state = false;
       }
+    }
+  }
+
+  Future<void> enregistrerTokenFCM(String uid) async {
+    final token = await FirebaseMessaging.instance.getToken();
+    if (token != null) {
+      await FirebaseFirestore.instance.collection('users').doc(uid).update({
+        'fcmToken': token,
+      });
     }
   }
 

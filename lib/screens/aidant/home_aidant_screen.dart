@@ -25,11 +25,11 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
     final ok = await showDialog(
       context: context,
       builder: (_) => AlertDialog(
-        title: Text("Message pour le beneficiaire"),
+        title: Text("Message pour le bénéficiaire"),
         content: TextField(
           controller: controller,
           maxLines: 3,
-          decoration: InputDecoration(hintText: "Ex : je peux vous aider"),
+          decoration: InputDecoration(hintText: "Ex : je peux vous aider."),
         ),
         actions: [
           TextButton(
@@ -64,7 +64,7 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Proposition envoyee',
+            'Proposition envoyée',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.green,
@@ -124,7 +124,7 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
                           borderSide: BorderSide(color: Colors.green, width: 2),
                           borderRadius: BorderRadius.circular(30),
                         ),
-                        hintText: 'Rechercher par lieu/catégorie',
+                        hintText: 'Recherche par lieu/catégorie',
                         prefixIcon: Icon(Icons.search),
                         suffixIcon: IconButton(
                           onPressed: () {
@@ -168,6 +168,7 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
                       return Padding(
                         padding: const EdgeInsets.all(10),
                         child: Card(
+                          elevation: 5,
                           color: Colors.teal[50],
                           child: ListTile(
                             title: Text(
@@ -195,7 +196,7 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
                                 Row(
                                   children: [
                                     Text(
-                                      'Categorie : ',
+                                      'Catégorie : ',
                                       style: TextStyle(
                                         fontSize: 15,
                                         fontWeight: FontWeight.bold,
@@ -259,7 +260,7 @@ class _HomeAidantScreenState extends ConsumerState<HomeAidantScreen> {
                                             );
                                           }
                                         },
-                                  child: Text(data ? "Deja propose" : "Aide"),
+                                  child: Text(data ? "Déjà propose" : "Aide"),
                                 );
                               },
                               error: (error, stackTrace) => Icon(Icons.error),

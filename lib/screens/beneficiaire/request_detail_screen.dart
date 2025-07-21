@@ -51,7 +51,7 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Demande cloturee avec succès',
+            'Demande cloturée avec succès',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.green,
@@ -103,7 +103,7 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'DETAIL DE LA DEMANDE',
+          'Details de la demande',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -171,17 +171,38 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
               style: TextStyle(fontSize: 16),
             ),
             SizedBox(height: 5),
-            Divider(color: Colors.black),
             Text(
-              "Propositions recues :",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+              'Date de la demande : ${widget.demandeModel.date}',
+              style: TextStyle(
+                fontSize: 16,
+                fontStyle: FontStyle.italic,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+            SizedBox(height: 10),
+            Divider(color: Colors.green, thickness: 1.5),
+            Text(
+              'Propositions reçues',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w500,
+                color: Colors.green,
+              ),
             ),
             SizedBox(height: 4),
             Expanded(
               child: propositions.when(
                 data: (data) {
                   if (data.isEmpty) {
-                    return Center(child: Text("Aucune propositions"));
+                    return Center(
+                      child: Text(
+                        "Aucune proposition reçue pour cette demande.",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontStyle: FontStyle.italic,
+                        ),
+                      ),
+                    );
                   }
                   return ListView.builder(
                     shrinkWrap: true,
@@ -226,19 +247,22 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
                     width: 200,
                     child: CustomButton(
                       color: Colors.red,
-                      title: "Cloture la demande",
+                      title: "Cloturer la demande",
                       isLoading: ref.watch(isLoadingCloture),
-                      onPressed: () {
+                      onPressed: () async {
                         try {
                           ref.read(isLoadingCloture.notifier).state = true;
-                          clotureDemande();
+                          await clotureDemande();
                           ref.invalidate(mesDemandesProvider);
                           ref.invalidate(mesPropositionsProvider);
                         } catch (e) {
+                          if (!context.mounted) {
+                            return;
+                          }
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(
                               content: Text(
-                                "Une erreur inattendu est survenue veuillez recommence",
+                                "Une erreur est survenue, veuillez réessayer.",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
@@ -258,7 +282,7 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        'Cette demande est cloture',
+                        'Demande Cloturée',
                         style: TextStyle(
                           color: Colors.green,
                           fontSize: 15,
@@ -285,7 +309,7 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    'Demande Supprime',
+                                    'Demande supprimée avec succès',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -301,7 +325,7 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(
                                   content: Text(
-                                    "Une erreur inattendu est survenue veuillez recommence",
+                                    "Une erreur est survenue, veuillez réessayer.",
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.bold,
@@ -325,81 +349,3 @@ class _RequestDetailScreenState extends ConsumerState<RequestDetailScreen> {
     );
   }
 }
-
-/*
-ElevatedButton.icon(
-                      onPressed: () {
-                     
-                          isLoadingCloture = true;
-                          clotureDemande();
-                          ref.invalidate(mesDemandesProvider);
-                          ref.invalidate(mesPropositionsProvider);
-                      },
-                      label: Text(
-                        isLoadingCloture
-                            ? CircularProgressIndicator().toString()
-                            : "Cloture la demande",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.red,
-                      ),
-                    ),
-
-*/
-
-/*
- ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.red,
-                        ),
-                        onPressed: () async {
-                          try {
-                            final docRef = FirebaseFirestore.instance
-                                .collection('demandes')
-                                .doc(widget.demandeModel.uid);
-                            await docRef.delete();
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  'Demande Supprime',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                backgroundColor: Colors.red,
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                            Navigator.pop(context);
-                            ref.invalidate(mesDemandesProvider);
-                          } catch (e) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(
-                                  e.toString(),
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                backgroundColor: Colors.red,
-                                behavior: SnackBarBehavior.floating,
-                              ),
-                            );
-                          }
-                        },
-                        child: Text(
-                          "Supprimer",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
-
-*/

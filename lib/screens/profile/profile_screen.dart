@@ -16,7 +16,7 @@ class ProfileScreen extends ConsumerWidget {
       body: user.when(
         data: (data) {
           if (data == null) {
-            return Center(child: Text('Donne introuvable'));
+            return Center(child: Text('Aucun utilisateur trouvé.'));
           }
           return ListView(
             children: [
@@ -55,7 +55,7 @@ class ProfileScreen extends ConsumerWidget {
                     );
                   },
                   child: Text(
-                    'MODIFIER',
+                    'Modifier le profil',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -82,7 +82,7 @@ class ProfileScreen extends ConsumerWidget {
                         );
                       },
                       child: Text(
-                        'A propos',
+                        'À propos',
                         style: TextStyle(fontSize: 20, color: Colors.black),
                       ),
                     ),
@@ -98,12 +98,13 @@ class ProfileScreen extends ConsumerWidget {
                   children: [
                     Icon(Icons.logout, size: 30, color: Colors.red),
                     TextButton(
-                      onPressed: () {
-                        FirebaseAuth.instance.signOut();
+                      onPressed: () async {
+                        await FirebaseAuth.instance.signOut();
+                        if (!context.mounted) return;
                         Navigator.pushReplacementNamed(context, '/login');
                       },
                       child: Text(
-                        'Deconnexion',
+                        'Déconnexion',
                         style: TextStyle(fontSize: 20, color: Colors.red),
                       ),
                     ),

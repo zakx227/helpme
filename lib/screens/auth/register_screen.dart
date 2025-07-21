@@ -44,7 +44,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
-            'Les deux mots de passe ne sont pas identique',
+            'Les mots de passe ne correspondent pas',
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           backgroundColor: Colors.red,
@@ -70,7 +70,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
               content: Text(
-                'Enregistrement reussi !',
+                'Inscription réussie !',
                 style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
               backgroundColor: Colors.green,
@@ -89,7 +89,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             message = 'Cet email est déjà utilisé.';
             break;
           default:
-            message = "Une erreur inattendu est survenue veuillez recommence";
+            message = "Une erreur est survenue, veuillez réessayer.";
         }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -128,6 +128,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back_ios, color: Colors.green),
         ),
+        centerTitle: true,
+        title: Text(
+          'S\'ENREGISTRER',
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -137,14 +146,6 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 30),
               child: Column(
                 children: [
-                  Text(
-                    'CREER UN COMPTE',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
                   SizedBox(height: 10),
                   TextFormField(
                     validator: (value) {
@@ -243,7 +244,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                         vertical: 15,
                         horizontal: 20,
                       ),
-                      prefixIcon: Icon(Icons.villa, color: Colors.black87),
+                      prefixIcon: Icon(
+                        Icons.location_on,
+                        color: Colors.black87,
+                      ),
                       border: InputBorder.none,
                       filled: true,
                       fillColor: Color(0xFFedf0f8),
@@ -325,11 +329,11 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     items: [
                       DropdownMenuItem(
                         value: 'aidant',
-                        child: Text('Je veux aide'),
+                        child: Text('j\'aide les autres'),
                       ),
                       DropdownMenuItem(
                         value: 'beneficiaire',
-                        child: Text('j\'ai besoin d\'aide'),
+                        child: Text('je demande de l\'aide'),
                       ),
                     ],
                     onChanged: (value) => setState(() {
@@ -339,7 +343,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                       border: InputBorder.none,
                       filled: true,
                       fillColor: Color(0xFFedf0f8),
-                      labelText: 'Qui etes-vous',
+                      labelText: 'Sélectionner un rôle',
                       labelStyle: TextStyle(
                         color: Colors.black87,
                         fontWeight: FontWeight.bold,
@@ -418,7 +422,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     obscureText: true,
                     controller: _confirmPasswordController,
                     decoration: InputDecoration(
-                      hintText: 'Confirmez le mot de passe',
+                      hintText: 'Confirmer mot de passe',
                       hintStyle: TextStyle(color: Colors.black87, fontSize: 18),
                       contentPadding: EdgeInsets.symmetric(
                         vertical: 15,
@@ -448,7 +452,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                   ),
                   SizedBox(height: 20),
                   CustomButton(
-                    title: 'CREER VOTREZ COMPTE',
+                    title: 'S\'ENREGISTRER',
                     color: Colors.green,
                     onPressed: register,
                     isLoading: ref.watch(isLoading),

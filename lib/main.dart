@@ -16,9 +16,11 @@ import 'package:helpme/screens/profile/edit_profile_screen.dart';
 import 'package:helpme/screens/profile/profile_screen.dart';
 import 'screens/beneficiaire/request_screen.dart';
 
+//Future<void> _backgroundHandler(RemoteMessage message) async {}
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
+  // FirebaseMessaging.onBackgroundMessage(_backgroundHandler);
   runApp(ProviderScope(child: MyApp()));
 }
 

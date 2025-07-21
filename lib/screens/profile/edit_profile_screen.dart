@@ -41,6 +41,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back_ios, color: Colors.green),
         ),
+        title: Text(
+          "Modifier le profil",
+          style: TextStyle(
+            fontSize: 25,
+            fontWeight: FontWeight.bold,
+            color: Colors.green,
+          ),
+        ),
       ),
       body: user.when(
         data: (data) {
@@ -54,14 +62,6 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                 padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Column(
                   children: [
-                    Text(
-                      'MODIFIER SON COMPTE',
-                      style: TextStyle(
-                        fontSize: 25,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.green,
-                      ),
-                    ),
                     SizedBox(height: 10),
                     //--------------------TextFormFilel pour le nom -----------------------------------------
                     TextFormField(
@@ -126,7 +126,10 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                           vertical: 15,
                           horizontal: 20,
                         ),
-                        prefixIcon: Icon(Icons.villa, color: Colors.black87),
+                        prefixIcon: Icon(
+                          Icons.location_on,
+                          color: Colors.black87,
+                        ),
                         border: InputBorder.none,
                         filled: true,
                         fillColor: Color(0xFFedf0f8),
@@ -201,13 +204,13 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                     ),
                     SizedBox(height: 20),
                     CustomButton(
-                      title: 'MODIFIER',
+                      title: 'Modifier',
                       color: Colors.green,
                       onPressed: () async {
                         //--------------------Fonction pour modifier un user -----------------------------------------
                         if (_formKey.currentState!.validate()) {
-                          ref.read(isLoading.notifier).state = true;
                           try {
+                            ref.read(isLoading.notifier).state = true;
                             UserModel userModel = UserModel(
                               uid: widget.userModel.uid,
                               name: nameController.text,
@@ -217,12 +220,14 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                               role: widget.userModel.role,
                             );
 
-                            UserService().updateUser(userModel);
+                            await UserService().updateUser(userModel);
                             ref.invalidate(userProvider);
+
+                            if (!context.mounted) return;
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  'Modification reussi !',
+                                  "Profil modifié avec succès.",
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -237,7 +242,7 @@ class _EditProfileScreenState extends ConsumerState<EditProfileScreen> {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
                                 content: Text(
-                                  e.toString(),
+                                  "Une erreur est survenue, veuillez réessayer.",
                                   style: TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,

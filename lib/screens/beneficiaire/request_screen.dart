@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:helpme/models/demande_model.dart';
 
 import 'package:helpme/provider/provider.dart';
+import 'package:helpme/services/demande_service.dart';
 import 'package:helpme/widgets/custom_button.dart';
 import 'package:uuid/uuid.dart';
 
@@ -57,30 +58,43 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
     if (_formKey.currentState!.validate()) {
       ref.read(isLoading.notifier).state = true;
       try {
-        await ref.read(sqliteProvider).insertDemande(demande);
-        await ref.read(demandeServiceProvider).saveDemande(demande);
+        String? result = await DemandeService().saveDemande(demande);
         if (!mounted) {
           return;
         }
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(
-              'Demande ajoute',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+        if (result == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Demande ajoutée avec succès',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Colors.green,
+              behavior: SnackBarBehavior.floating,
             ),
-            backgroundColor: Colors.green,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        _titreController.clear();
-        _descriptionController.clear();
-        _lieuController.clear();
-        _dateController.clear();
+          );
+
+          _titreController.clear();
+          _descriptionController.clear();
+          _lieuController.clear();
+          _dateController.clear();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(
+                'Une erreur est survenue, veuillez réessayer.',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              backgroundColor: Colors.red,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+        }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text(
-              'Une erreur inattendu est survenue veuillez recommence',
+              e.toString(),
               style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
             backgroundColor: Colors.red,
@@ -116,7 +130,7 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
       appBar: AppBar(
         centerTitle: true,
         title: Text(
-          'AJOUTE UNE DEMANDE',
+          'Ajouter une demande',
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
@@ -330,10 +344,11 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
                 ),
                 SizedBox(height: 20),
                 CustomButton(
-                  title: 'Ajouter',
+                  title: 'Ajouter la demande',
                   color: Colors.green,
                   onPressed: () {
                     saveDemande();
+
                     ref.invalidate(mesDemandesProvider);
                   },
                   isLoading: ref.watch(isLoading),

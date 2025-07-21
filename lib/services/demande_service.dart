@@ -6,11 +6,16 @@ class DemandeService {
 
   //--------------------Enregistrement d'une demande -----------------------------------------
 
-  Future<void> saveDemande(DemandeModel demande) async {
-    await _firestore
-        .collection('demandes')
-        .doc(demande.uid)
-        .set(demande.toJson());
+  Future<String?> saveDemande(DemandeModel demande) async {
+    try {
+      await _firestore
+          .collection('demandes')
+          .doc(demande.uid)
+          .set(demande.toJson());
+      return null;
+    } catch (e) {
+      return e.toString();
+    }
   }
 }
 

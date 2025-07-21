@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:helpme/services/auth_service.dart';
 import 'package:helpme/widgets/custom_button.dart';
 
-class ForgotPasswordScreen extends StatefulWidget {
+final isLoading = StateProvider((ref) => false);
+
+class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
 
   @override
-  State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
+  ConsumerState<ForgotPasswordScreen> createState() =>
+      _ForgotPasswordScreenState();
 }
 
-class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
+class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     final formKey = GlobalKey<FormState>();
@@ -21,6 +26,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back_ios, color: Colors.green),
         ),
+        title: Text(
+          'Mot de passe oublié',
+          style: TextStyle(
+            color: Colors.green,
+            fontWeight: FontWeight.bold,
+            fontSize: 25,
+          ),
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -30,18 +43,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               key: formKey,
               child: Column(
                 children: [
+                  // Text(
+                  //   'MOT DE PASSE OUBLIE',
+                  //   style: TextStyle(
+                  //     fontSize: 25,
+                  //     fontWeight: FontWeight.bold,
+                  //     color: Colors.green,
+                  //   ),
+                  // ),
                   Text(
-                    'MOT DE PASSE OUBLIE',
-                    style: TextStyle(
-                      fontSize: 25,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.green,
-                    ),
-                  ),
-                  Text(
-                    'Veuillez renseigner votre email, vous allez recevoir un mail contenant le lien de récuperation',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 18),
+                    "Entrez votre adresse e-mail pour réinitialiser votre mot de passe.",
+                    style: TextStyle(fontSize: 16, color: Colors.black87),
                   ),
                   SizedBox(height: 20),
                   TextFormField(
@@ -72,14 +84,72 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         borderSide: BorderSide(color: Colors.green, width: 2),
                         borderRadius: BorderRadius.circular(30),
                       ),
+                      errorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderSide: BorderSide(color: Colors.red, width: 2),
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
                   ),
                   SizedBox(height: 20),
                   CustomButton(
-                    isLoading: false,
+                    isLoading: ref.watch(isLoading),
                     title: 'ENVOYER',
                     color: Colors.green,
-                    onPressed: () {},
+                    onPressed: () async {
+                      if (formKey.currentState!.validate()) {
+                        ref.read(isLoading.notifier).state = true;
+                        try {
+                          String? result = await AuthService().passwordReset(
+                            emailController.text,
+                          );
+                          if (!context.mounted) {
+                            return;
+                          }
+
+                          if (result == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Un email de réinitialisation a été envoyé à ${emailController.text}.',
+                                  style: TextStyle(color: Colors.white),
+                                ),
+                                backgroundColor: Colors.green,
+                                behavior: SnackBarBehavior.floating,
+                              ),
+                            );
+                            Navigator.pop(context);
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(
+                                  'Une erreur est survenue, veuillez réessayer.',
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                backgroundColor: Colors.red,
+                              ),
+                            );
+                          }
+                        } catch (e) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text(
+                                'Une erreur est survenue, veuillez réessayer.',
+                                style: TextStyle(color: Colors.red),
+                              ),
+                            ),
+                          );
+                        } finally {
+                          ref.read(isLoading.notifier).state = false;
+                        }
+                      }
+                    },
                   ),
                 ],
               ),
