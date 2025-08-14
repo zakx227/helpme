@@ -109,7 +109,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
               child: Column(
                 children: [
                   Image.asset(
-                    'assets/images/logo.png',
+                    "assets/images/logo.png",
                     height: 280,
                     width: 300,
                   ),

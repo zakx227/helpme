@@ -102,6 +102,19 @@ class ProfileScreen extends ConsumerWidget {
                         await FirebaseAuth.instance.signOut();
                         if (!context.mounted) return;
                         Navigator.pushReplacementNamed(context, '/login');
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            content: Text(
+                              'Déconnexion réussie',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            backgroundColor: Colors.green,
+                            behavior: SnackBarBehavior.floating,
+                          ),
+                        );
                       },
                       child: Text(
                         'Déconnexion',

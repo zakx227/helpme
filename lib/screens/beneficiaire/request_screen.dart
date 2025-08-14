@@ -31,6 +31,15 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
 
   String categorie = 'Courses';
 
+  @override
+  void dispose() {
+    _titreController.dispose();
+    _descriptionController.dispose();
+    _lieuController.dispose();
+    _dateController.dispose();
+    super.dispose();
+  }
+
   //--------------Liste des categorie ----------------------------
   final List<String> categories = [
     'Courses',
@@ -78,17 +87,6 @@ class _RequestScreenState extends ConsumerState<RequestScreen> {
           _descriptionController.clear();
           _lieuController.clear();
           _dateController.clear();
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content: Text(
-                'Une erreur est survenue, veuillez réessayer.',
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-              ),
-              backgroundColor: Colors.red,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
         }
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(

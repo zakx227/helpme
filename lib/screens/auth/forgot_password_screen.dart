@@ -14,10 +14,17 @@ class ForgotPasswordScreen extends ConsumerStatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
+  final formKey = GlobalKey<FormState>();
+  final TextEditingController emailController = TextEditingController();
+
+  @override
+  void dispose() {
+    emailController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final formKey = GlobalKey<FormState>();
-    final TextEditingController emailController = TextEditingController();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -121,7 +128,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
                                 behavior: SnackBarBehavior.floating,
                               ),
                             );
-                            Navigator.pop(context);
+                            emailController.clear();
                           } else {
                             ScaffoldMessenger.of(context).showSnackBar(
                               SnackBar(
